@@ -23,6 +23,7 @@ class PlantRecognition:
         # This will track if we found any plants
         plants_found = []
         
+
         # Convert to HSV color space for better color detection
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         
@@ -74,13 +75,13 @@ class PlantRecognition:
             x, y, w, h = plant['box']
             label = f"{self.class_names[plant['class']]} ({plant['confidence']:.1f}%)"
             
-            # Draw green box around the plant
+            # draw green box around the plant
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
             # Put label above the box
             cv2.putText(frame, label, (x, y - 10),
                       cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
         
-        # Show message if no plants found
+        # not found msg
         if not plants_found:
             cv2.putText(frame, "No plants detected", (50, 50),
                       cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2, cv2.LINE_AA)

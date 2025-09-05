@@ -1,0 +1,17 @@
+config.json
+
+
+# Python cache and bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment file
+.env
+
+# Output, logs, and temporary files
+outputs/
+*.log
+
+# VS Code settings
+.vscode/

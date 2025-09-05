@@ -57,7 +57,7 @@ val_gen = val_datagen.flow_from_directory(
 # Check what classes were found
 print(f"Found classes: {train_gen.class_indices}")
 
-#  IMPROVED MODEL ARCHITECTURE 
+#  MODEL ARCHITECTURE 
 model = Sequential([
     Conv2D(32, (3,3), activation='relu', input_shape=(128,128,3)),
     MaxPooling2D((2,2)),
@@ -67,7 +67,7 @@ model = Sequential([
     MaxPooling2D((2,2)),
     Flatten(),
     Dense(256, activation='relu'),
-    Dropout(0.5),  # Added dropout to prevent overfitting
+    Dropout(0.5),  
     Dense(128, activation='relu'),
     Dense(len(train_gen.class_indices), activation='softmax')
 ])
