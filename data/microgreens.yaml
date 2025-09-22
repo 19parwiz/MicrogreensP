@@ -1,0 +1,6 @@
+train: D:/AgroTech/data/microgreens/train/images
+val: D:/AgroTech/data/microgreens/val/images
+test: D:/AgroTech/data/microgreens/test/images
+
+nc: 5
+names: ['Arugula', 'Basil', 'Beetroot', 'Mangold', 'Tarragon']

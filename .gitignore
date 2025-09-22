@@ -1,17 +1,25 @@
-config.json
-
-
-# Python cache and bytecode
+# Python
 __pycache__/
 *.pyc
-*.pyo
 
-# Environment file
+# Virtual environment
+venv/
+
+# Environment variables
 .env
 
-# Output, logs, and temporary files
+# YOLO runs & outputs
+runs/
 outputs/
-*.log
 
-# VS Code settings
-.vscode/
+# Datasets (raw images)
+data/faces/
+data/microgreens/
+test_images/
+
+# Trained models & weights
+models/
+*.pt
+*.h5
+*.yml
+*.pkl
