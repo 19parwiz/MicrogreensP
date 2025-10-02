@@ -1,11 +1,17 @@
 import cv2
-from ultralytics import YOLO
 from src.camera import Camera
+from src.plant_recognition_module import PlantRecognition
 
-# Load trained YOLO model
-model = YOLO("D:/AgroTech/runs/detect/train9/weights/best.pt")
+# Initialize recognition module with smaller boxes (tune shrink_ratio as needed)
+recognizer = PlantRecognition(
+    weights_path="D:/AgroTech/runs/detect/train9/weights/best.pt",
+    conf=0.25,
+    iou=0.45,
+    device=None,
+    shrink_ratio=0.6,
+)
 
-# Initialize camera (default index 0)
+# Initialize camera
 camera = Camera(index=0)
 
 if not camera.open():
@@ -20,13 +26,10 @@ while True:
         print("No frame captured")
         break
 
-    # Run YOLO detection
-    results = model.predict(frame, conf=0.25)
+    # Run detection and draw our smaller boxes
+    annotated_frame = recognizer.predict(frame)
 
-    # Annotate frame
-    annotated_frame = results[0].plot()
-
-    # Resize for better visibility (optional)
+    # Resize for better visibility
     resized_frame = cv2.resize(annotated_frame, (800, 600))
 
     # Show the video stream
