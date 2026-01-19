@@ -12,6 +12,7 @@ from src.camera import Camera
 from src.face_recognition_module import FaceRecognition
 from src.plant_recognition_module import PlantRecognition
 from src.enhanced_plant_recognition import EnhancedPlantRecognition
+from stream_rtsp import RTSPPusher
 
 def _run_recognition(mode, recognizer, cam):
     """Main recognition loop for all detection modes"""
@@ -24,6 +25,12 @@ def _run_recognition(mode, recognizer, cam):
 
     prev_time = time.time()
     frame_count = 0
+
+    rtsp_url = os.getenv("STREAM_RTSP_URL", "rtsp://10.1.10.144:8554/cam1")
+    rtsp_pusher = None
+    encoder_w = None
+    encoder_h = None
+    target_fps = 25
     
     while True:
         frame = cam.read()
@@ -44,6 +51,18 @@ def _run_recognition(mode, recognizer, cam):
         cv2.putText(result_frame, f"Frame: {frame_count}", (10, 60),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
 
+        if rtsp_pusher is None:
+            h, w = result_frame.shape[:2]
+            encoder_w, encoder_h = w, h
+            rtsp_pusher = RTSPPusher(rtsp_url, encoder_w, encoder_h, fps=target_fps, bitrate="2500k")
+            rtsp_pusher.start()
+
+        if result_frame.shape[1] != encoder_w or result_frame.shape[0] != encoder_h:
+            result_frame = cv2.resize(result_frame, (encoder_w, encoder_h), interpolation=cv2.INTER_LINEAR)
+
+        if rtsp_pusher:
+            rtsp_pusher.push(result_frame)
+
         cv2.imshow("AgroTech Recognition System", result_frame)
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -51,6 +70,8 @@ def _run_recognition(mode, recognizer, cam):
 
     print(f"\nSession ended. Processed {frame_count} frames.")
     cam.release()
+    if rtsp_pusher:
+        rtsp_pusher.stop()
     cv2.destroyAllWindows()
 
 
